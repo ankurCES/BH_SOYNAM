@@ -22,7 +22,7 @@ PHENOTYPE_HEADERS = [ 'PhenotypeCode', 'UnitOfMeasure', 'Description', 'MinThres
 PHENOTYPE_MEASURES_HEADERS = [ 'Experiment', 'Entry', 'Location', 'Field', 'Rep', 'Plot', 'Range', 'Row', 'GermplasmId', 'Phenotype', 'Value' ]
 
 # Experiment Name DataSets
-GERM_ID = 'Original Strain'
+GERM_ID = 'Corrected Strain'
 YEAR = 'Year'
 LOCATION = 'Loc'
 FAMILY = 'Family'
