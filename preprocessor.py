@@ -75,13 +75,19 @@ def process_raw_data():
                 return 0
     return 1
 
+def clean_up_files():
+    for root, dirs, files in os.walk(DIR_CONST.CSV_DIR):
+        for f in files:
+            os.unlink(os.path.join(root, f))
+
 def main():
     start_time = time.time()
     process_status = process_raw_data()
     if process_status == 0:
         # For Soy family only
         # Add logic to toggle between multiple datasets
-        generate_phenotype_measures_data(DS_CONST.SOY_EXP_NAM, DS_CONST.SOY_SPECIES_NAME)
+        generate_phenotype_measures_data(DS_CONST.SOY_EXP_NAM, DS_CONST.SOY_SPECIES_NAME, DS_CONST.SOY_PHENOTYPE_FIELD_LIST, DS_CONST.SOY_PHENOTYPE_UNIT_MAP)
+        clean_up_files()
     else:
         console.error('Error reading raw data. Is the file present?')
         quit()

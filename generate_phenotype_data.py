@@ -26,7 +26,7 @@ GERMPLASM_DATA_LIST = []
 '''
 Creates the xlsx phenotype datasheet
 '''
-def create_phenotype_datasheet(experimentName, data):
+def create_phenotype_datasheet(experimentName, data, phenotypeFieldList, phenotypeUnitMap):
 
     phenotype_measure_file = DIR_CONST.OUTPUT_DIR+'/'+experimentName+'_phenotype_measures.xlsx'
     workbook = xlsxwriter.Workbook(phenotype_measure_file)
@@ -39,7 +39,7 @@ def create_phenotype_datasheet(experimentName, data):
     print('\nCreating Phenotype Measures WorkBook')
     create_experiment_worksheet(experiment_worksheet, 1, 0)
     create_location_worksheet(location_worksheet, 1, 0)
-    create_phenotype_worksheet(phenotype_worksheet, 1, 0)
+    create_phenotype_worksheet(phenotype_worksheet, 1, 0, phenotypeFieldList, phenotypeUnitMap)
     create_phenotype_measure_worksheet(phenotype_measures_worksheet, 1, 0, data)
     # Finalize writing to workbook
     workbook.close()
@@ -65,12 +65,12 @@ def create_location_worksheet(location_worksheet, row_num, col_num):
         row_num += 1
     console.info('* Added locations data')
 
-def create_phenotype_worksheet(phenotype_worksheet, row_num, col_num):
+def create_phenotype_worksheet(phenotype_worksheet, row_num, col_num, phenotypeFieldList, phenotypeUnitMap):
     global PHENOTYPE_FIELD_LIST
     phenotype_worksheet.write_row(0, 0, tuple(PHN_CONST.PHENOTYPE_HEADERS))
-    for field in PHN_CONST.PHENOTYPE_FIELD_LIST:
+    for field in phenotypeFieldList:
         list = PHENOTYPE_FIELD_LIST[field]
-        unit_of_measure = PHN_CONST.PHENOTYPE_UNIT_MAP[field]
+        unit_of_measure = phenotypeUnitMap[field]
         phenotype_row_data = [field, unit_of_measure, '', min(list), max(list)]
         phenotype_worksheet.write_row(row_num, col_num, tuple(phenotype_row_data))
         row_num += 1
@@ -147,9 +147,9 @@ def get_column_index_by_name(filename, fieldname):
 '''
 Returns the indices of the fields needed from the generated column config json file
 '''
-def get_column_indices_by_name(filename):
+def get_column_indices_by_name(filename, phenotypeFieldList):
     field_indices = []
-    for fieldname in PHN_CONST.PHENOTYPE_FIELD_LIST:
+    for fieldname in phenotypeFieldList:
         index = get_column_index_by_name(filename, fieldname)
         field_indices.append(index)
     return field_indices
@@ -157,9 +157,9 @@ def get_column_indices_by_name(filename):
 '''
 Load the Column mappings in memory
 '''
-def load_column_mappings():
+def load_column_mappings(phenotypeFieldList):
     global PHENOTYPE_FIELD_LIST
-    for field in PHN_CONST.PHENOTYPE_FIELD_LIST:
+    for field in phenotypeFieldList:#PHN_CONST.PHENOTYPE_FIELD_LIST:
         PHENOTYPE_FIELD_LIST[field] = []
 
     try:
@@ -179,12 +179,12 @@ def load_column_mappings():
         console.error('An error has occured')
         quit()
 
-def generate_phenotype_measures_data(experimentName, speciesName):
+def generate_phenotype_measures_data(experimentName, speciesName, phenotypeFieldList, phenotypeUnitMap):
     start_time = time.time()
-    load_column_mappings()
-    indices = get_column_indices_by_name(PHN_CONST.FILE_COLUMN_CONFIG)
+    load_column_mappings(phenotypeFieldList)
+    indices = get_column_indices_by_name(PHN_CONST.FILE_COLUMN_CONFIG, phenotypeFieldList)
     data = read_delimited_data(experimentName, PHN_CONST.FILE_DATA_CSV, indices)
-    create_phenotype_datasheet(experimentName, data)
+    create_phenotype_datasheet(experimentName, data, phenotypeFieldList, phenotypeUnitMap)
     elapsed_time = time.time() - start_time
     mlsec = repr(elapsed_time).split('.')[1][:3]
     print('\bPhenoType Measures data file generated in : '+time.strftime("%H:%M:%S.{}".format(mlsec), time.gmtime(elapsed_time)))
