@@ -172,7 +172,10 @@
     "compound_germplasm": false,
     "germplasm_cols": ["sample"],
     "compound_phenotype": false,
-    "phenotype_cols": ["leaf_length",	"leaf_width",	"upper_leaf_angle",	"leaf_angle_boxcox_transformed"]
+    "phenotype_cols": ["leaf_length",	"leaf_width",	"upper_leaf_angle",	"leaf_angle_boxcox_transformed"],
+    "compound_location": false,
+    "year_col": "None",
+    "location_col": "None"
   },
   {
     "file": "NAM_DaysToSilk.txt",

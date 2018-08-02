@@ -53,7 +53,7 @@ def create_experiment_worksheet(experiment_worksheet, row_num, col_num):
         experiment_name = experiment[0]
         year = experiment[1]
         location = experiment[2]
-        experiment_row = [experiment_name, location, '', '', '', '', '', int(year)]
+        experiment_row = [experiment_name, location, '', '', '', '', '', year]
         experiment_worksheet.write_row(row_num, col_num, tuple(experiment_row))
         row_num += 1
     console.info('* Added experiments data')
@@ -110,8 +110,15 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config):
                 else:
                     location_col_name = config['location_col']
                     year_col_name = config['year_col']
-                    location_name = row[location_col_name]
-                    year = row[year_col_name]
+                    if location_col_name != 'None' and year_col_name != 'None':
+                        location_name = row[location_col_name]
+                        year = row[year_col_name]
+                    else:
+                        location_name = 'NA'
+                        year = ''
+
+                # Experiment Names
+                experiment_name = config['experiment_prefix']+'_'+year
 
                 # Process germplasm
                 if config['compound_germplasm'] == True:
@@ -121,9 +128,6 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config):
                 else:
                     germplasm_col = germplasm_cols[0]
                     germplasm_id = row[germplasm_col]
-
-                # Experiment Names
-                experiment_name = config['experiment_prefix']+'_'+year
 
                 # Filter germplasm ids between z001 and z026
                 if( germplasm_check(germplasm_id) ):
@@ -164,6 +168,7 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config):
                             add_exp_loc_list(experiment_name, year, location_name)
                             file_data.append(row_templ)
         except (UnicodeError, KeyError) as e:
+            print(e)
             pass
         return file_data
 
