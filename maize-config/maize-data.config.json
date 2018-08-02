@@ -1,0 +1,229 @@
+[
+  {
+    "file": "Kump_etal_2011_NatGen_SLB_raw_correct_120711.csv",
+    "delimiter": ",",
+    "experiment_prefix":"maizeNAM_Kump_2011_NatGen_SLB",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry_num"],
+    "compound_phenotype": false,
+    "phenotype_cols": ["DTA", "slb1",	"slb2"],
+    "column_flag": "entry_id",
+    "compound_location": true,
+    "location_column": "env",
+    "location_map":{
+      "07NC": {
+        "name": "Clayton, NC",
+        "year": "2007"
+      },
+      "07FL": {
+        "name": "Homestead, FL",
+        "year": "2007"
+      },
+      "06NC": {
+        "name": "Clayton, NC",
+        "year": "2006"
+      }
+    }
+  },
+  {
+    "file": "Dataset S1.Photoperiod_paper_data_supplement_raw_data.csv",
+    "delimiter": ",",
+    "experiment_prefix":"maizeNAM_Hung_2012_PNAS",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry_num"],
+    "compound_phenotype": false,
+    "phenotype_cols": ["dta",	"dts", "asi",	"gdd_dta", "gdd_dts",	"gdd_asi"],
+    "compound_location": true,
+    "location_column": "env",
+    "location_map":{
+      "01NC06": {
+        "name": "Clayton, NC",
+        "year": "2006"
+      },
+      "02MO06": {
+        "name": "Columbia, MO",
+        "year": "2006"
+      },
+      "03NY06": {
+        "name": "Aurora, NY",
+        "year": "2006"
+      },
+      "04IL06": {
+        "name": "Urbana, IL",
+        "year": "2006"
+      },
+      "05FL06": {
+        "name": "Homestead, FL",
+        "year": "2007"
+      },
+      "06PR06": {
+        "name": "Ponce, Puerto Rico",
+        "year": "2007"
+      },
+      "07NC07": {
+        "name": "Clayton, NC",
+        "year": "2007"
+      },
+      "08MO06": {
+        "name": "Columbia, MO",
+        "year": "2006"
+      },
+      "09NY06": {
+        "name": "Aurora, NY",
+        "year": "2007"
+      },
+      "10IL06": {
+        "name": "Urbana, IL",
+        "year": "2007"
+      },
+      "11FL06": {
+        "name": "Homestead, FL",
+        "year": "2008"
+      },
+      "08MO07": {
+        "name":"Columbia, MO",
+        "year":"2007"
+      }
+    }
+  },
+  {
+    "file": "maize_inflo7_rawdata.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"maizeNAM_Brown_2011_PloSGenet",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry"],
+    "compound_phenotype": true,
+    "phenotype_cols": ["value"],
+    "phenotype_field_name": "trait",
+    "compound_location": true,
+    "location_column": "location",
+    "location_map":{
+    	"06A": {
+    		"name": "Aurora, NY",
+    		"year": "2006"
+    	},
+    	"06CL1": {
+    		"name": "Clayton, NC",
+    		"year": "2006"
+    	},
+    	"06FL1": {
+    		"name": "Homestead, FL",
+    		"year": "2006"
+    	},
+    	"06PR": {
+    		"name": "Ponce, PR",
+    		"year": "2006"
+    	},
+    	"06U": {
+    		"name": "Urbana, IL",
+    		"year": "2006"
+    	},
+    	"07A": {
+    		"name": "Aurora, NY",
+    		"year": "2007"
+    	},
+    	"07CL": {
+    		"name": "Clayton, NC",
+    		"year": "2007"
+    	},
+    	"07U": {
+    		"name": "Urbana, IL",
+    		"year": "2007"
+    	},
+    	"08A": {
+    		"name": "Aurora, NY",
+    		"year": "2006"
+    	},
+    	"26M3": {
+    		"name": "Columbia, MO",
+    		"year": "2006"
+    	}
+    }
+  },
+  {
+    "file": "Poland_2011_PNAS_rawNLBphenos_20090925.csv",
+    "delimiter": ",",
+    "experiment_prefix":"maizeNAM_Poland_2011_PNAS",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry99"],
+    "compound_phenotype": false,
+    "phenotype_cols": ["dla1", "dla2", "dla3", "dta"],
+    "compound_location": true,
+    "location_column": "year",
+    "location_map":{
+      "1": {
+        "name": "Aurora, NY",
+        "year": "2007"
+      },
+      "2": {
+        "name": "Aurora, NY",
+        "year": "2008"
+      },
+      "3": {
+        "name": "Aurora, NY",
+        "year": "2009"
+      }
+    }
+  },
+  {
+    "file": "Tian_etal2011NatGenet.leaf_trait_phenotype.csv",
+    "delimiter": ",",
+    "experiment_prefix":"maizeNAM_Tian_2011_NatGen_leaf",
+    "compound_germplasm": false,
+    "germplasm_cols": ["sample"],
+    "compound_phenotype": false,
+    "phenotype_cols": ["leaf_length",	"leaf_width",	"upper_leaf_angle",	"leaf_angle_boxcox_transformed"]
+  },
+  {
+    "file": "NAM_DaysToSilk.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"maizeNAM_Buckler_2009_science_flowering",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry_num"],
+    "compound_phenotype": true,
+    "phenotype_field_name": "DaysToSilk",
+    "phenotype_cols": ["value"],
+    "compound_location": false,
+    "year_col": "year",
+    "location_col": "loc_name"
+  },
+  {
+    "file": "NAM_DaysToTassel.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"maizeNAM_Buckler_2009_science_flowering",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry_num"],
+    "compound_phenotype": true,
+    "phenotype_field_name": "DaysToTassel",
+    "phenotype_cols": ["value"],
+    "compound_location": false,
+    "year_col": "year",
+    "location_col": "loc_name"
+  },
+  {
+    "file": "NAM_SilkingDate.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"maizeNAM_Buckler_2009_science_flowering",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry_num"],
+    "compound_phenotype": true,
+    "phenotype_field_name": "SilkingDate",
+    "phenotype_cols": ["value"],
+    "compound_location": false,
+    "year_col": "year",
+    "location_col": "loc_name"
+  },
+  {
+    "file": "NAM_TasselingDate.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"maizeNAM_Buckler_2009_science_flowering",
+    "compound_germplasm": true,
+    "germplasm_cols": ["pop", "entry_num"],
+    "compound_phenotype": true,
+    "phenotype_field_name": "TasselingDate",
+    "phenotype_cols": ["value"],
+    "compound_location": false,
+    "year_col": "year",
+    "location_col": "loc_name"
+  }
+]

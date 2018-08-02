@@ -1,0 +1,66 @@
+[
+  {
+    "file":"Cob_Diameter_NAM_Sum06007_aug.csv",
+    "phenotype_cols": ["cob_diameter"]
+  },
+  {
+    "file":"Cob_Length_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["cob_length"]
+  },
+  {
+    "file":"Cob_Mass_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["cob_mass"]
+  },
+  {
+    "file":"Ear_Mass_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["ear_mass"]
+  },
+  {
+    "file":"Ear_Row_Num_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["ear_row_num"]
+  },
+  {
+    "file":"Flowering_Time_NAM_Sum0607_aug.csv",
+    "phenotype_cols":["Days_To_Silk",	"Days_To_Anthesis", "ASI"]
+  },
+  {
+    "file":"Height_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["ph"]
+  },
+  {
+    "file":"Kernel_Number_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["kernel_number"]
+  },
+  {
+    "file":"Kernels_Per_Row_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["kernels_per_row"]
+  },
+  {
+    "file":"Leaf_Length_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["leaf_length"]
+  },
+  {
+    "file":"Leaf_Width_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["leaf_width"]
+  },
+  {
+    "file":"Tassel_Length_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["tassel_length"]
+  },
+  {
+    "file":"Tassel_Primary_Branch_Num_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["tassel_primary_branch_num"]
+  },
+  {
+    "file":"Total_Kernel_Weight_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["total_kernel_weight"]
+  },
+  {
+    "file":"Upper_Leaf_Angle_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["upper_leaf_angle"]
+  },
+  {
+    "file":"Weight_Of_20_Kernels_NAM_Sum0607_aug.csv",
+    "phenotype_cols": ["twenty_kernel_weight"]
+  }
+]

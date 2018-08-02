@@ -1,0 +1,50 @@
+{
+  "01NC06": {
+    "name": "Clayton, NC",
+    "year": "2006"
+  },
+  "02MO06": {
+    "name": "Columbia, MO",
+    "year": "2006"
+  },
+  "03NY06": {
+    "name": "Aurora, NY",
+    "year": "2006"
+  },
+  "04IL06": {
+    "name": "Urbana, IL",
+    "year": "2006"
+  },
+  "05FL06": {
+    "name": "Homestead, FL",
+    "year": "2007"
+  },
+  "06PR06": {
+    "name": "Ponce, Puerto Rico",
+    "year": "2007"
+  },
+  "07NC07": {
+    "name": "Clayton, NC",
+    "year": "2007"
+  },
+  "08MO06": {
+    "name": "Columbia, MO",
+    "year": "2006"
+  },
+  "09NY06": {
+    "name": "Aurora, NY",
+    "year": "2007"
+  },
+  "10IL06": {
+    "name": "Urbana, IL",
+    "year": "2007"
+  },
+  "11FL06": {
+    "name": "Homestead, FL",
+    "year": "2008"
+  },
+  "08MO07": {
+    "name":"Columbia, MO",
+    "year":"2007"
+  }
+}

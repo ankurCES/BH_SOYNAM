@@ -56,22 +56,6 @@ def preprocess_germplasm_data(experimentName, speciesName, germplasm_list):
 '''
 Generate the germplasm data from the list of tuples (GermplasmId, Family)
 '''
-# TODO THIS IS THE OLD ONE --> Confirm with Qi if this is the right approach else fall to v2 of the same method
-def generate_germplasm_data_v1(experimentName, speciesName, germplasm_list):
-    print('\bCreating Germplasm WorkBook')
-    sorted_germplasm_list = sorted(set(germplasm_list))
-    germplasm_data = []
-    for item in sorted_germplasm_list:
-        germplasm_id = item[0]
-        family_name = item[1]
-        female_parent_id = GERM_CONST.HUB_PARENT
-        male_parent_id = GERM_CONST.GERMPLASM_FAMILY_MAP[family_name]
-        origin = female_parent_id+'_x_'+male_parent_id
-        germplasm_row = [GERM_CONST.SPECIES_NAME, germplasm_id, '', 'inbred', '', '', origin, female_parent_id, '', male_parent_id, '']
-        germplasm_data.append(germplasm_row)
-    create_germplasm_workbook(experimentName, germplasm_data)
-
-# TODO Confirm with Qi and fall back to this else v1
 def generate_germplasm_data_v2(experimentName, speciesName, germplasm_dict):
     print('\bCreating Germplasm WorkBook')
     germplasm_data = []
