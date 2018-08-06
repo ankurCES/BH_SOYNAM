@@ -97,10 +97,12 @@ def create_location_worksheet(location_worksheet, row_num, col_num, location_lis
     sorted_location_list = sorted(set(location_list))
     location_worksheet.write_row(0, 0, tuple(PHN_CONST.LOCATION_HEADERS))
     for location in sorted_location_list:
-        if location != 'NA':
+        if location == 'NA':
+            location_row = ['NA', 'NA', 'NA', '', '', '', '', '', '']
+        else:
             location_row = [1, 'USA', location, '', '', '', '', '', '']
-            location_worksheet.write_row(row_num, col_num, tuple(location_row))
-            row_num += 1
+        location_worksheet.write_row(row_num, col_num, tuple(location_row))
+        row_num += 1
     console.info('* Added locations data')
 
 def create_phenotype_worksheet(phenotype_worksheet, row_num, col_num, phenotypeUnitMap, phenotypeFieldList, phenotypeFieldMap):
