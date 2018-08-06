@@ -6,7 +6,6 @@ import csv
 import time
 import term_print as console
 import datetime
-import re
 import sys, getopt
 import pathlib
 from dateutil.parser import parse
@@ -17,6 +16,8 @@ import phenotype_constants as PHN_CONST
 import dataset_constants as DS_CONST
 import germplasm_constants as GERM_CONST
 
+# Helper imports
+from data_check_helpers import data_type_check, date_pattern_match, germplasm_check
 from spreadsheet_helper import create_germplasm_workbook, create_phenotype_workbook
 
 SOY_CONFIG_DUMP = []
@@ -122,25 +123,6 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
             pass
         return file_data
 
-def data_type_check(data_type, year, phenotype_value):
-    if(data_type == 'SOY' and year != '' and year != 'NA' and phenotype_value != 'NA'):
-        return True
-    elif (data_type == None):
-        return True
-    else:
-        return False
-
-
-def date_pattern_match(value):
-    date_pattern = re.compile(r"^(1[0-2]|0?[1-9])/(3[01]|[12][0-9]|0?[1-9])/(?:[0-9]{2})?[0-9]{2}$")
-    return date_pattern.match(value)
-
-def germplasm_check(value, data_type = None):
-    if data_type == None:
-        germplasm_pattern = re.compile(r"^[Z]{1}0[0-2][1-6]")
-        return germplasm_pattern.match(value)
-    else:
-        return True
 '''
 Read heredity dataset
 '''
@@ -188,7 +170,7 @@ def read_heredity_data(file_name, phenotype_cols):
                             add_to_phenotype_field_list(phenotype_name, phenotype_value)
                             add_exp_loc_list(experiment_name, year, location_name)
                             file_data.append(row_templ)
-                console._print('Processed %d Heredity records' % len(file_data))
+                console._print('Processed %d records' % len(file_data))
         except(UnicodeError, KeyError) as e:
             console.error('File name: '+file_name+' MISSING :>>>> '+str(e))
             pass
@@ -210,6 +192,10 @@ def add_exp_loc_list(experiment, year, location):
     LOCATION_LIST.append(location)
     EXP_LIST.append(tuple([experiment, year, location]))
 
+
+##############################
+# Maize Data processes
+##############################
 '''
 Read Maize config and load in memory
 '''
@@ -236,19 +222,6 @@ def load_maize_config():
         MAIZE_GERM_MAP = json.load(file)
 
 '''
-Read Soy config and load in memory
-'''
-def load_soy_config():
-    global PHENOTYPE_FIELD_LIST
-
-    for field in DS_CONST.SOY_PHENOTYPE_FIELD_LIST:
-        PHENOTYPE_FIELD_LIST[field] = []
-
-    with open(DIR_CONST.SOY_CONFIG) as file:
-        global SOY_CONFIG_DUMP
-        SOY_CONFIG_DUMP = json.load(file)
-
-'''
 Process Maize Germplasm Data
 '''
 def process_maize_germplasm_data():
@@ -264,22 +237,7 @@ def process_maize_germplasm_data():
     create_germplasm_workbook(DS_CONST.MAIZE_EXP_NAM, germplasm_data)
 
 '''
-Generate the germplasm data
-'''
-def process_soy_germplasm_data(experimentName, speciesName, germplasm_dict):
-    print('\bCreating Germplasm WorkBook')
-    germplasm_data = []
-    for germplasm_id in germplasm_dict:
-        family_name = 'NAM '+ str(germplasm_dict[germplasm_id])
-        female_parent_id = GERM_CONST.HUB_PARENT
-        male_parent_id = GERM_CONST.GERMPLASM_FAMILY_MAP[family_name]
-        origin = female_parent_id+'_x_'+male_parent_id
-        germplasm_row = [speciesName, germplasm_id, '', 'inbred', '', '', origin, female_parent_id, '', male_parent_id, '']
-        germplasm_data.append(germplasm_row)
-    create_germplasm_workbook(experimentName, germplasm_data)
-
-'''
-Read config file and process the raw data files
+Process Maize Phenotype Data
 '''
 def process_maize_phenotype_data():
     raw_data = []
@@ -299,6 +257,40 @@ def process_maize_phenotype_data():
         raw_data = raw_data + file_data
     create_phenotype_workbook(DS_CONST.MAIZE_EXP_NAM, raw_data, DS_CONST.MAIZE_PHENOTYPE_UNIT_MAP, DS_CONST.MAIZE_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
+##############################
+# SOY Data processes
+##############################
+'''
+Read Soy config and load in memory
+'''
+def load_soy_config():
+    global PHENOTYPE_FIELD_LIST
+
+    for field in DS_CONST.SOY_PHENOTYPE_FIELD_LIST:
+        PHENOTYPE_FIELD_LIST[field] = []
+
+    with open(DIR_CONST.SOY_CONFIG) as file:
+        global SOY_CONFIG_DUMP
+        SOY_CONFIG_DUMP = json.load(file)
+
+'''
+Process Soy Germplasm Data
+'''
+def process_soy_germplasm_data(experimentName, speciesName, germplasm_dict):
+    print('\bCreating Germplasm WorkBook')
+    germplasm_data = []
+    for germplasm_id in germplasm_dict:
+        family_name = 'NAM '+ str(germplasm_dict[germplasm_id])
+        female_parent_id = GERM_CONST.HUB_PARENT
+        male_parent_id = GERM_CONST.GERMPLASM_FAMILY_MAP[family_name]
+        origin = female_parent_id+'_x_'+male_parent_id
+        germplasm_row = [speciesName, germplasm_id, '', 'inbred', '', '', origin, female_parent_id, '', male_parent_id, '']
+        germplasm_data.append(germplasm_row)
+    create_germplasm_workbook(experimentName, germplasm_data)
+
+'''
+Pre-process Soy Germplasm Data
+'''
 def preprocess_soy_germplasm_data():
     sorted_germplasm_list = sorted(set(GERMPLASM_DATA_LIST))
     germplasm_family_dict = {}
@@ -313,6 +305,9 @@ def preprocess_soy_germplasm_data():
             germplasm_family_dict[germplasm_id] = int(family_num)
     process_soy_germplasm_data(DS_CONST.SOY_EXP_NAM, DS_CONST.SOY_SPECIES_NAME, germplasm_family_dict)
 
+'''
+Process Soy Phenotype Data
+'''
 def process_soy_phenotype_data():
     raw_data = []
     load_soy_config()
@@ -325,6 +320,7 @@ def process_soy_phenotype_data():
         raw_data = raw_data + file_data
     create_phenotype_workbook(DS_CONST.SOY_EXP_NAM, raw_data, DS_CONST.SOY_PHENOTYPE_UNIT_MAP, DS_CONST.SOY_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
+#################################################
 
 def generate_soy_data_files():
     process_soy_phenotype_data()
@@ -334,6 +330,7 @@ def generate_maize_data_files():
     process_maize_phenotype_data()
     process_maize_germplasm_data()
 
+#################################################
 def process_data(arg):
     start_time = time.time()
     # Create Output directory
