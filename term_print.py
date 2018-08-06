@@ -6,6 +6,7 @@ Custom print methods for visualization and logging to file
 
 import sys
 import logging
+from colorama import init, Fore
 from datetime import datetime
 
 # Uncomment for file logging
@@ -15,21 +16,26 @@ logging.basicConfig(
     format="%(asctime)s:%(levelname)s:%(message)s"
     )
 
+init(autoreset=True)
 
 def error(string, exception_message = None):
-    print("\033[91m {}\033[00m" .format(string))
+    print(Fore.RED + string)
+    # print("\033[91m {}\033[00m" .format(string))
     # logging.error(string + '\n' + exception_message)
 
 def success(string):
-    print("\033[92m {}\033[00m" .format(string))
+    print(Fore.GREEN + string)
+    # print("\033[92m {}\033[00m" .format(string))
     # logging.debug(string)
 
 def info(string):
-    print("\033[96m {}\033[00m" .format(string))
+    print(Fore.CYAN + string)
+    # print("\033[96m {}\033[00m" .format(string))
     # logging.info(string)
 
 def warning(string):
-    print("\033[93m {}\033[00m" .format(string))
+    print(Fore.YELLOW + string)
+    # print("\033[93m {}\033[00m" .format(string))
     # logging.warning(string)
 
 def _print(string):
