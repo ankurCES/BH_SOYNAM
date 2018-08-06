@@ -17,11 +17,11 @@ For Soy data create the following directory structure `raw-data/soy-data` and pl
 or
 `python3 process_data.py -d <dataset_name>`
 
-##Help
+## Help
 
 `python3 process_data.py -h` or `python3 process_data.py --help`
 
 to show a list of available datasets and usage
 
-##Other Info
+## Other Info
 End point files will be generated in `processed-data` directory
