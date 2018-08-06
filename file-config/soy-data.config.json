@@ -1,0 +1,14 @@
+[
+  {
+    "file": "SoyNAM all familes phenotype data.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"soyNAM",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Corrected Strain"],
+    "compound_phenotype": false,
+    "phenotype_cols": ["Ht (in)", "Ht (cm)", "Days to Mat", "Lod", "Yld (bu/a)", "Yld (kg/ha)", "Moisture", "Protein", "Oil", "Fiber", "100 sdwt (g)"],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Loc"
+  }
+]
