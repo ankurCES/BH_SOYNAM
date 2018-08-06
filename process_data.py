@@ -340,7 +340,7 @@ def process_data(arg):
     elif arg == 'MAIZE':
         generate_maize_data_files()
     else:
-        print('Inavlid dataset\nRun with -h to see a list of available datasets')
+        console.error('Invalid dataset\nRun with -h to see a list of available datasets')
     total_execution_time = time.time() - start_time
     total_execution_time_ms = repr(total_execution_time).split('.')[1][:3]
     console.success('\bTotal execution time : '+time.strftime("%H:%M:%S.{}".format(total_execution_time_ms), time.gmtime(total_execution_time)))
@@ -349,14 +349,18 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv, 'hm:d', ['help', 'dataset='])
     except getopt.GetoptError:
-        print('process_data.py -dataset <dataset_name>')
-        print('Available datasets = SOY, MAIZE')
+        print('\nUSAGE:')
+        console.success('process_data.py --dataset <dataset_name>')
+        print('\bAvailable datasets :')
+        console.error('[SOY, MAIZE]')
         sys.exit(2)
 
     for opt, arg in opts:
-        if opt == '-h':
-            print('process_data.py --dataset <dataset_name>')
-            print('Available datasets = SOY, MAIZE')
+        if opt in ('-h', '--help'):
+            print('\nUSAGE:')
+            console.success('process_data.py --dataset <dataset_name>')
+            print('\bAvailable datasets :')
+            console.error('[SOY, MAIZE]')
             sys.exit()
         elif opt in ('-d', '--dataset'):
             process_data(arg)
