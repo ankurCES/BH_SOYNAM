@@ -8,6 +8,7 @@ import term_print as console
 import datetime
 import re
 import sys, getopt
+import pathlib
 from dateutil.parser import parse
 
 # Local modules
@@ -335,6 +336,8 @@ def generate_maize_data_files():
 
 def process_data(arg):
     start_time = time.time()
+    # Create Output directory
+    pathlib.Path('processed-data').mkdir(parents=True, exist_ok=True)
     if arg == 'SOY':
         generate_soy_data_files()
     elif arg == 'MAIZE':
