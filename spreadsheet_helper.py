@@ -3,6 +3,7 @@
 import xlsxwriter
 import time
 import term_print as console
+import numpy as np
 
 # Constant imports
 import germplasm_constants as GERM_CONST
@@ -55,6 +56,31 @@ def create_germplasm_workbook(experimentName, germplasm_data):
 
 # Internal functions
 
+def levenshtein(seq1, seq2):
+    size_x = len(seq1) + 1
+    size_y = len(seq2) + 1
+    matrix = np.zeros ((size_x, size_y))
+    for x in range(size_x):
+        matrix [x, 0] = x
+    for y in range(size_y):
+        matrix [0, y] = y
+
+    for x in range(1, size_x):
+        for y in range(1, size_y):
+            if seq1[x-1] == seq2[y-1]:
+                matrix [x,y] = min(
+                    matrix[x-1, y] + 1,
+                    matrix[x-1, y-1],
+                    matrix[x, y-1] + 1
+                )
+            else:
+                matrix [x,y] = min(
+                    matrix[x-1,y] + 1,
+                    matrix[x-1,y-1] + 1,
+                    matrix[x,y-1] + 1
+                )
+    return int(matrix[size_x - 1, size_y - 1])
+
 def create_experiment_worksheet(experiment_worksheet, row_num, col_num, experiment_list):
     sorted_experiment_list = sorted(set(experiment_list))
     experiment_worksheet.write_row(0, 0, tuple(PHN_CONST.EXPERIMENT_HEADERS))
@@ -79,12 +105,23 @@ def create_location_worksheet(location_worksheet, row_num, col_num, location_lis
 
 def create_phenotype_worksheet(phenotype_worksheet, row_num, col_num, phenotypeUnitMap, phenotypeFieldList, phenotypeFieldMap):
     phenotype_worksheet.write_row(0, 0, tuple(PHN_CONST.PHENOTYPE_HEADERS))
+    local_field_map = {}
+    for field in phenotypeFieldList:
+        for key in phenotypeUnitMap:
+            distance = levenshtein(field.lower(), key.lower())
+            if distance < 1:
+                local_field_map[field] = key
+
     for field in phenotypeFieldList:
         try:
-            list = phenotypeFieldMap[field]
-            unit_of_measure = phenotypeUnitMap[field]
+            list = phenotypeFieldMap[field.lower()]
+            if field in phenotypeUnitMap:
+                unit_of_measure = phenotypeUnitMap[field]
+            elif field in local_field_map:
+                key = local_field_map[field]
+                unit_of_measure = phenotypeUnitMap[key]
             seq_list = [x for x in list if x != 'NA']
-            phenotype_row_data = [field, unit_of_measure, '', min(seq_list), max(seq_list)]
+            phenotype_row_data = [field.lower(), unit_of_measure, '', min(seq_list), max(seq_list)]
             phenotype_worksheet.write_row(row_num, col_num, tuple(phenotype_row_data))
             row_num += 1
         except ValueError as e:

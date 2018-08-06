@@ -48,6 +48,18 @@ MAIZE_PHENOTYPE_FIELD_LIST = [
     "tassel_length", "tassel_primary_branch_num", "total_kernel_weight", "twenty_kernel_weight"
 ]
 
+MAIZE_PHENOTYPE_DUP_MAP = {
+	'dta': 0,
+	'slb1': 0,
+	'slb2': 0,
+	'dts': 0,
+	'asi': 0,
+	'leaf_length': 0,
+	'leaf_width': 0,
+	'upper_leaf_angle': 0,
+	'leaf_angle_boxcox_transformed': 0
+}
+
 MAIZE_PHENOTYPE_UNIT_MAP = {
     "TasselingDate": "date",
     "SilkingDate": "date",

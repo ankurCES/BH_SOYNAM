@@ -28,14 +28,19 @@ MAIZE_HEREDITY_LOC_CONF = []
 LOCATION_LIST = []
 EXP_LIST = []
 PHENOTYPE_FIELD_LIST = {}
+DIST_PHENOTYPE_FIELD_LIST = []
 MAIZE_GERM_MAP = {}
 GERMPLASM_DATA_LIST = []
+
+MAIZE_DUP_PHENOTYPE = DS_CONST.MAIZE_PHENOTYPE_DUP_MAP
 
 '''
 Read file and populate records
 '''
 def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data_type = None):
     global GERMPLASM_DATA_LIST
+    global MAIZE_DUP_PHENOTYPE
+
     with open(file_name, encoding="latin-1") as file:
         try:
             file_data = []
@@ -57,12 +62,10 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                         year = row[year_col_name]
                     else:
                         location_name = 'NA'
-                        year = 'NA'
+                        year = '9999'
 
-                if year == 'NA':
-                    experiment_name = config['experiment_prefix']
-                else:
-                    experiment_name = config['experiment_prefix']+'_'+year
+
+                experiment_name = config['experiment_prefix']+'_'+year
 
                 # Process germplasm
                 if config['compound_germplasm'] == True:
@@ -112,6 +115,11 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                                     GERMPLASM_DATA_LIST.append(tuple([germplasm_id, family_name, family_num]))
                                 else:
                                     GERMPLASM_DATA_LIST.append(germplasm_id)
+
+                                if phenotype_name.lower() in MAIZE_DUP_PHENOTYPE and MAIZE_DUP_PHENOTYPE[phenotype_name.lower()] != 0:
+                                    phenotype_name = phenotype_name.lower()+str(MAIZE_DUP_PHENOTYPE[phenotype_name.lower()])
+                                else:
+                                    phenotype_name = phenotype_name.lower()
                                 row_templ.append(phenotype_name)
                                 row_templ.append(phenotype_value)
                                 add_to_phenotype_field_list(phenotype_name, phenotype_value)
@@ -121,6 +129,9 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
         except (UnicodeError, KeyError) as e:
             console.error('File name: '+file_name+' MISSING :>>>> '+str(e))
             pass
+        for phenotype_col in phenotype_cols:
+            if phenotype_col.lower() in MAIZE_DUP_PHENOTYPE:
+                MAIZE_DUP_PHENOTYPE[phenotype_col.lower()] = int(MAIZE_DUP_PHENOTYPE[phenotype_col.lower()]) + 1
         return file_data
 
 '''
@@ -128,6 +139,8 @@ Read heredity dataset
 '''
 def read_heredity_data(file_name, phenotype_cols):
     global GERMPLASM_DATA_LIST
+    global MAIZE_DUP_PHENOTYPE
+
     with open(file_name, encoding="latin-1") as file:
         try:
             file_data = []
@@ -162,9 +175,14 @@ def read_heredity_data(file_name, phenotype_cols):
                             row_templ = [experiment_name, '', location_name, '', '', '', '', '', germplasm_id]
                             phenotype_name = column
                             try:
-                                phenotype_value = float(row[phenotype_name])
+                                phenotype_value = float(row[column])
                             except ValueError as e:
                                 phenotype_value = 'NA'
+
+                            if phenotype_name.lower() in MAIZE_DUP_PHENOTYPE and MAIZE_DUP_PHENOTYPE[phenotype_name.lower()] != 0:
+                                phenotype_name = phenotype_name.lower()+str(MAIZE_DUP_PHENOTYPE[phenotype_name.lower()])
+                            else:
+                                phenotype_name = phenotype_name.lower()
                             row_templ.append(phenotype_name)
                             row_templ.append(phenotype_value)
                             add_to_phenotype_field_list(phenotype_name, phenotype_value)
@@ -174,14 +192,23 @@ def read_heredity_data(file_name, phenotype_cols):
         except(UnicodeError, KeyError) as e:
             console.error('File name: '+file_name+' MISSING :>>>> '+str(e))
             pass
-        return file_data
 
+    for phenotype_col in phenotype_cols:
+        if phenotype_col.lower() in MAIZE_DUP_PHENOTYPE:
+            MAIZE_DUP_PHENOTYPE[phenotype_col.lower()] = int(MAIZE_DUP_PHENOTYPE[phenotype_col.lower()]) + 1
+    return file_data
 '''
 Maintain data records for phenotype measure for threshold calculation
 '''
 def add_to_phenotype_field_list(fieldname, value):
     global PHENOTYPE_FIELD_LIST
-    PHENOTYPE_FIELD_LIST[fieldname].append(value)
+    global DIST_PHENOTYPE_FIELD_LIST
+    if fieldname in PHENOTYPE_FIELD_LIST:
+        PHENOTYPE_FIELD_LIST[fieldname].append(value)
+    else:
+        PHENOTYPE_FIELD_LIST[fieldname] = []
+        DIST_PHENOTYPE_FIELD_LIST.append(fieldname)
+        PHENOTYPE_FIELD_LIST[fieldname].append(value)
 
 '''
 Maintain data records for phenotype measure for threshold calculation
@@ -200,11 +227,6 @@ def add_exp_loc_list(experiment, year, location):
 Read Maize config and load in memory
 '''
 def load_maize_config():
-    global PHENOTYPE_FIELD_LIST
-
-    for field in DS_CONST.MAIZE_PHENOTYPE_FIELD_LIST:
-        PHENOTYPE_FIELD_LIST[field] = []
-
     with open(DIR_CONST.MAIZE_CONFIG) as file:
         global MAIZE_CONFIG_DUMP
         MAIZE_CONFIG_DUMP = json.load(file)
@@ -240,6 +262,7 @@ def process_maize_germplasm_data():
 Process Maize Phenotype Data
 '''
 def process_maize_phenotype_data():
+    global PHENOTYPE_FIELD_LIST
     raw_data = []
     load_maize_config()
     for file_config in MAIZE_CONFIG_DUMP:
@@ -255,7 +278,8 @@ def process_maize_phenotype_data():
         phenotype_cols = file_object['phenotype_cols']
         file_data = read_heredity_data(file_name, phenotype_cols)
         raw_data = raw_data + file_data
-    create_phenotype_workbook(DS_CONST.MAIZE_EXP_NAM, raw_data, DS_CONST.MAIZE_PHENOTYPE_UNIT_MAP, DS_CONST.MAIZE_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
+    # print(PHENOTYPE_FIELD_LIST)
+    create_phenotype_workbook(DS_CONST.MAIZE_EXP_NAM, raw_data, DS_CONST.MAIZE_PHENOTYPE_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
 ##############################
 # SOY Data processes
@@ -264,11 +288,6 @@ def process_maize_phenotype_data():
 Read Soy config and load in memory
 '''
 def load_soy_config():
-    global PHENOTYPE_FIELD_LIST
-
-    for field in DS_CONST.SOY_PHENOTYPE_FIELD_LIST:
-        PHENOTYPE_FIELD_LIST[field] = []
-
     with open(DIR_CONST.SOY_CONFIG) as file:
         global SOY_CONFIG_DUMP
         SOY_CONFIG_DUMP = json.load(file)
