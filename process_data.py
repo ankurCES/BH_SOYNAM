@@ -342,8 +342,6 @@ def process_data(arg):
         generate_soy_data_files()
     elif arg == 'MAIZE':
         generate_maize_data_files()
-    else:
-        console.error('Invalid dataset\nRun with -h to see a list of available datasets')
     total_execution_time = time.time() - start_time
     total_execution_time_ms = repr(total_execution_time).split('.')[1][:3]
     console.success('\bTotal execution time : '+time.strftime("%H:%M:%S.{}".format(total_execution_time_ms), time.gmtime(total_execution_time)))
@@ -355,7 +353,7 @@ def main(argv):
         print('\nUSAGE:')
         console.success('process_data.py --dataset <dataset_name>')
         print('\bAvailable datasets :')
-        console.error('[SOY, MAIZE]')
+        console.error(str(DS_CONST.AVAILABLE_DATASETS))
         sys.exit(2)
 
     for opt, arg in opts:
@@ -363,10 +361,13 @@ def main(argv):
             print('\nUSAGE:')
             console.success('process_data.py --dataset <dataset_name>')
             print('\bAvailable datasets :')
-            console.error('[SOY, MAIZE]')
+            console.error(str(DS_CONST.AVAILABLE_DATASETS))
             sys.exit()
         elif opt in ('-d', '--dataset'):
-            process_data(arg)
+            if arg in DS_CONST.AVAILABLE_DATASETS:
+                process_data(arg)
+            else:
+                console.error('Invalid dataset\nRun with -h to see a list of available datasets')
 
 if __name__== "__main__":
     main(sys.argv[1:])

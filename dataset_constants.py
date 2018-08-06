@@ -3,6 +3,8 @@
 '''
 Constants for Different Datasets
 '''
+# AVAILABLE DATASETS
+AVAILABLE_DATASETS = ['SOY', 'MAIZE']
 
 # Soyabean Family
 SOY_EXP_NAM = 'soyNAM'
