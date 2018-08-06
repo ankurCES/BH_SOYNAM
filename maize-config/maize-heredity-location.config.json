@@ -19,8 +19,16 @@
     "name": "Homestead, FL",
     "year": "2007"
   },
+  "11FL07": {
+    "name": "Homestead, FL",
+    "year": "2007"
+  },
   "06PR06": {
     "name": "Ponce, Puerto Rico",
+    "year": "2007"
+  },
+  "05NC07": {
+    "name": "Clayton, NC",
     "year": "2007"
   },
   "07NC07": {
@@ -31,17 +39,37 @@
     "name": "Columbia, MO",
     "year": "2006"
   },
+  "07NY07": {
+    "name": "Aurora, NY",
+    "year": "2007"
+  },
   "09NY06": {
     "name": "Aurora, NY",
+    "year": "2007"
+  },
+  "09NY07": {
+    "name": "Aurora, NY",
+    "year": "2007"
+  },
+  "08IL07": {
+    "name": "Urbana, IL",
     "year": "2007"
   },
   "10IL06": {
     "name": "Urbana, IL",
     "year": "2007"
   },
+  "10IL07": {
+    "name": "Urbana, IL",
+    "year": "2007"
+  },
   "11FL06": {
     "name": "Homestead, FL",
     "year": "2008"
+  },
+  "06MO07": {
+    "name":"Columbia, MO",
+    "year":"2007"
   },
   "08MO07": {
     "name":"Columbia, MO",

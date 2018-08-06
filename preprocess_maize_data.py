@@ -28,7 +28,7 @@ GERMPLASM_DATA_LIST = []
 '''
 Creates the xlsx phenotype datasheet
 '''
-def create_phenotype_datasheet(experimentName, data, phenotypeUnitMap):
+def create_phenotype_datasheet(experimentName, data, phenotypeUnitMap, phenotypeFieldList):
 
     phenotype_measure_file = DIR_CONST.OUTPUT_DIR+'/'+experimentName+'_phenotype_measures.xlsx'
     workbook = xlsxwriter.Workbook(phenotype_measure_file)
@@ -41,7 +41,7 @@ def create_phenotype_datasheet(experimentName, data, phenotypeUnitMap):
     print('\nCreating Phenotype Measures WorkBook')
     create_experiment_worksheet(experiment_worksheet, 1, 0)
     create_location_worksheet(location_worksheet, 1, 0)
-    create_phenotype_worksheet(phenotype_worksheet, 1, 0, phenotypeUnitMap)
+    create_phenotype_worksheet(phenotype_worksheet, 1, 0, phenotypeUnitMap, phenotypeFieldList)
     create_phenotype_measure_worksheet(phenotype_measures_worksheet, 1, 0, data)
     # Finalize writing to workbook
     workbook.close()
@@ -62,19 +62,19 @@ def create_location_worksheet(location_worksheet, row_num, col_num):
     location_list = sorted(set(LOCATION_LIST))
     location_worksheet.write_row(0, 0, tuple(PHN_CONST.LOCATION_HEADERS))
     for location in location_list:
-        location_row = [1, 'USA', location, '', '', '', '', '', '']
-        location_worksheet.write_row(row_num, col_num, tuple(location_row))
-        row_num += 1
+        if location != 'NA':
+            location_row = [1, 'USA', location, '', '', '', '', '', '']
+            location_worksheet.write_row(row_num, col_num, tuple(location_row))
+            row_num += 1
     console.info('* Added locations data')
 
-def create_phenotype_worksheet(phenotype_worksheet, row_num, col_num, phenotypeUnitMap):
+def create_phenotype_worksheet(phenotype_worksheet, row_num, col_num, phenotypeUnitMap, phenotypeFieldList):
     global PHENOTYPE_FIELD_LIST
     phenotype_worksheet.write_row(0, 0, tuple(PHN_CONST.PHENOTYPE_HEADERS))
-    for field in DS_CONST.MAIZE_PHENOTYPE_FIELD_LIST:
+    for field in phenotypeFieldList:
         try:
             list = PHENOTYPE_FIELD_LIST[field]
-            # unit_of_measure = phenotypeUnitMap[field]
-            unit_of_measure = ''
+            unit_of_measure = phenotypeUnitMap[field]
             seq_list = [x for x in list if x != 'NA']
             phenotype_row_data = [field, unit_of_measure, '', min(seq_list), max(seq_list)]
             phenotype_worksheet.write_row(row_num, col_num, tuple(phenotype_row_data))
@@ -115,10 +115,12 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config):
                         year = row[year_col_name]
                     else:
                         location_name = 'NA'
-                        year = ''
+                        year = 'NA'
 
-                # Experiment Names
-                experiment_name = config['experiment_prefix']+'_'+year
+                if year == 'NA':
+                    experiment_name = config['experiment_prefix']
+                else:
+                    experiment_name = config['experiment_prefix']+'_'+year
 
                 # Process germplasm
                 if config['compound_germplasm'] == True:
@@ -168,7 +170,7 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config):
                             add_exp_loc_list(experiment_name, year, location_name)
                             file_data.append(row_templ)
         except (UnicodeError, KeyError) as e:
-            print(e)
+            console.error('File name: '+file_name+' MISSING :>>>> '+str(e))
             pass
         return file_data
 
@@ -191,12 +193,17 @@ def read_heredity_data(file_name, phenotype_cols):
             for row in reader:
                 location_col_name = 'env'
                 compound_location = row[location_col_name]
+                if len(compound_location) < 6:
+                    compound_location = compound_location.rjust(6,'0')
                 location_name = MAIZE_HEREDITY_LOC_CONF[compound_location]['name']
                 year = MAIZE_HEREDITY_LOC_CONF[compound_location]['year']
 
                 germplasm_id = 'Z'+row['pop'].rjust(3,'0')+'E'+row['entry_num'].rjust(4,'0')
 
-                experiment_name = 'maizeNAM_Hung_2012_Heterdity_'+year
+                if year == 'NA':
+                    experiment_name = 'maizeNAM_Hung_2012_Heterdity'
+                else:
+                    experiment_name = 'maizeNAM_Hung_2012_Heterdity_'+year
 
                 # Filter germplasm ids between z001 and z026
                 if( germplasm_check(germplasm_id) ):
@@ -221,6 +228,7 @@ def read_heredity_data(file_name, phenotype_cols):
                             add_exp_loc_list(experiment_name, year, location_name)
                             file_data.append(row_templ)
         except(UnicodeError, KeyError) as e:
+            console.error('File name: '+file_name+' MISSING :>>>> '+str(e))
             pass
         return file_data
 
@@ -243,7 +251,7 @@ def add_exp_loc_list(experiment, year, location):
 '''
 Read config and load in memory
 '''
-def load_config():
+def load_maize_config():
     global PHENOTYPE_FIELD_LIST
 
     for field in DS_CONST.MAIZE_PHENOTYPE_FIELD_LIST:
@@ -268,7 +276,7 @@ def load_config():
 '''
 Process Germplasm Data
 '''
-def process_germplasm_data():
+def process_maize_germplasm_data():
     sorted_germplasm_list = sorted(set(GERMPLASM_DATA_LIST))
     germplasm_data = []
     for germplasm_id in sorted_germplasm_list:
@@ -283,9 +291,9 @@ def process_germplasm_data():
 '''
 Read config file and process the raw data files
 '''
-def process_maize_data():
+def process_maize_phenotype_data():
     raw_data = []
-    load_config()
+    load_maize_config()
     for file_config in MAIZE_CONFIG_DUMP:
         file_name = DIR_CONST.MAIZE_RAW_DIR + '/' + file_config['file']
         delimiter = file_config['delimiter']
@@ -299,12 +307,12 @@ def process_maize_data():
         phenotype_cols = file_object['phenotype_cols']
         file_data = read_heredity_data(file_name, phenotype_cols)
         raw_data = raw_data + file_data
-    create_phenotype_datasheet(DS_CONST.MAIZE_EXP_NAM, raw_data, '')
+    create_phenotype_datasheet(DS_CONST.MAIZE_EXP_NAM, raw_data, DS_CONST.MAIZE_PHENOTYPE_UNIT_MAP, DS_CONST.MAIZE_PHENOTYPE_FIELD_LIST)
 
 
 def main():
-    process_maize_data()
-    process_germplasm_data()
+    process_maize_phenotype_data()
+    process_maize_germplasm_data()
 
 if __name__== "__main__":
     main()
