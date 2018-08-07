@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # encoding: utf-8
-import xlsxwriter
 import json
 import csv
 import time
