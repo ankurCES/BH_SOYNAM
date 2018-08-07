@@ -17,7 +17,7 @@ import germplasm_constants as GERM_CONST
 
 # Helper imports
 from data_check_helpers import data_type_check, date_pattern_match, germplasm_check
-from spreadsheet_helper import create_germplasm_workbook, create_phenotype_workbook
+from spreadsheet_helper import spreadsheet_helper
 
 SOY_CONFIG_DUMP = []
 
@@ -255,7 +255,7 @@ def process_maize_germplasm_data():
         parent = origin.split('_x_')
         germplasm_row = [DS_CONST.MAIZE_SPECIES_NAME, germplasm_id, '', 'inbred', '', '', origin, parent[0], '', parent[1], '']
         germplasm_data.append(germplasm_row)
-    create_germplasm_workbook(DS_CONST.MAIZE_EXP_NAM, germplasm_data)
+    workbook.create_germplasm_workbook(germplasm_data)
 
 '''
 Process Maize Phenotype Data
@@ -278,7 +278,7 @@ def process_maize_phenotype_data():
         file_data = read_heredity_data(file_name, phenotype_cols)
         raw_data = raw_data + file_data
     # print(PHENOTYPE_FIELD_LIST)
-    create_phenotype_workbook(DS_CONST.MAIZE_EXP_NAM, raw_data, DS_CONST.MAIZE_PHENOTYPE_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
+    workbook.create_phenotype_workbook(raw_data, DS_CONST.MAIZE_PHENOTYPE_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
 ##############################
 # SOY Data processes
@@ -294,7 +294,7 @@ def load_soy_config():
 '''
 Process Soy Germplasm Data
 '''
-def process_soy_germplasm_data(experimentName, speciesName, germplasm_dict):
+def process_soy_germplasm_data(speciesName, germplasm_dict):
     print('\bCreating Germplasm WorkBook')
     germplasm_data = []
     for germplasm_id in germplasm_dict:
@@ -304,7 +304,7 @@ def process_soy_germplasm_data(experimentName, speciesName, germplasm_dict):
         origin = female_parent_id+'_x_'+male_parent_id
         germplasm_row = [speciesName, germplasm_id, '', 'inbred', '', '', origin, female_parent_id, '', male_parent_id, '']
         germplasm_data.append(germplasm_row)
-    create_germplasm_workbook(experimentName, germplasm_data)
+    workbook.create_germplasm_workbook(germplasm_data)
 
 '''
 Pre-process Soy Germplasm Data
@@ -321,7 +321,7 @@ def preprocess_soy_germplasm_data():
                 germplasm_family_dict[germplasm_id] = int(family_num)
         else:
             germplasm_family_dict[germplasm_id] = int(family_num)
-    process_soy_germplasm_data(DS_CONST.SOY_EXP_NAM, DS_CONST.SOY_SPECIES_NAME, germplasm_family_dict)
+    process_soy_germplasm_data(DS_CONST.SOY_SPECIES_NAME, germplasm_family_dict)
 
 '''
 Process Soy Phenotype Data
@@ -336,15 +336,19 @@ def process_soy_phenotype_data():
         phenotype_cols = file_config['phenotype_cols']
         file_data = read_file(file_name, delimiter, germplasm_cols, phenotype_cols, file_config, 'SOY')
         raw_data = raw_data + file_data
-    create_phenotype_workbook(DS_CONST.SOY_EXP_NAM, raw_data, DS_CONST.SOY_PHENOTYPE_UNIT_MAP, DS_CONST.SOY_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
+    workbook.create_phenotype_workbook(raw_data, DS_CONST.SOY_PHENOTYPE_UNIT_MAP, DS_CONST.SOY_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
 #################################################
 
 def generate_soy_data_files():
+    global workbook
+    workbook = spreadsheet_helper(experimentName=DS_CONST.SOY_EXP_NAM)
     process_soy_phenotype_data()
     preprocess_soy_germplasm_data()
 
 def generate_maize_data_files():
+    global workbook
+    workbook = spreadsheet_helper(experimentName=DS_CONST.MAIZE_EXP_NAM)
     process_maize_phenotype_data()
     process_maize_germplasm_data()
 
