@@ -9,13 +9,15 @@
 
 Place the raw data file in the corresponding sub-directory under `raw-data` directory and then run
 
+`python3 process_data.py --dataset <dataset_name>`
+
+For available dataset names run with help option
+
 ### Example:
 
 For Soy data create the following directory structure `raw-data/soy-data` and place the raw data file in it.
 
-`python3 process_data.py --dataset <dataset_name>`
-or
-`python3 process_data.py -d <dataset_name>`
+`python3 process_data.py --dataset SOY`
 
 ## Help
 
