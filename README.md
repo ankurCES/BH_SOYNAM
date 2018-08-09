@@ -9,7 +9,7 @@
 
 Place the raw data file in the corresponding sub-directory under `raw-data` directory and then run
 
-Eg:
+### Example:
 
 For Soy data create the following directory structure `raw-data/soy-data` and place the raw data file in it.
 
