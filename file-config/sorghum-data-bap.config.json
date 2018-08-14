@@ -1,0 +1,15 @@
+[
+  {
+    "file": "baptraits.csv",
+    "delimiter": ",",
+    "experiment_prefix":"BAP",
+    "compound_germplasm": false,
+    "germplasm_cols": ["cultivar"],
+    "compound_phenotype": true,
+    "phenotype_cols": ["mean"],
+    "phenotype_field_name": "trait",
+    "compound_location": false,
+    "year_col": "raw_date",
+    "location_col": "None"
+  }
+]

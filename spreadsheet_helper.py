@@ -127,6 +127,8 @@ class spreadsheet_helper:
                 elif field in local_field_map:
                     key = local_field_map[field]
                     unit_of_measure = phenotypeUnitMap[key]
+                else:
+                    unit_of_measure = 'NA'
                 seq_list = [x for x in list if x != 'NA']
                 phenotype_row_data = [field.lower(), unit_of_measure, '', min(seq_list), max(seq_list)]
                 phenotype_worksheet.write_row(row_num, col_num, tuple(phenotype_row_data))

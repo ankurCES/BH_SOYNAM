@@ -16,8 +16,9 @@ import dataset_constants as DS_CONST
 import germplasm_constants as GERM_CONST
 
 # Helper imports
-from data_check_helpers import data_type_check, date_pattern_match, germplasm_check
+from data_check_helpers import data_type_check, date_pattern_match, germplasm_check, sorghum_date_process, remove_underscores
 from spreadsheet_helper import spreadsheet_helper
+from preprocess_sorghum import preprocess_sorghum_phenotype
 
 SOY_CONFIG_DUMP = []
 
@@ -63,8 +64,11 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                         location_name = 'NA'
                         year = '9999'
 
-
-                experiment_name = config['experiment_prefix']+'_'+year
+                if data_type == 'SORGHUM' and year_col_name != 'None':
+                    year = sorghum_date_process(row[year_col_name])
+                    experiment_name = config['experiment_prefix']+'_'+row['author']+'_'+year
+                else:
+                    experiment_name = config['experiment_prefix']+'_'+year
 
                 # Process germplasm
                 if config['compound_germplasm'] == True:
@@ -91,7 +95,7 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                         if skip_column == False and row[column] != '#VALUE!' and row[column] != '.':
                             row_templ = [experiment_name, '', location_name, '', '', '', '', '', germplasm_id]
                             if config['compound_phenotype'] == True:
-                                if 'maize_inflo7_rawdata.txt' in file_name:
+                                if 'maize_inflo7_rawdata.txt' in file_name or 'baptraits.csv' in file_name:
                                     phenotype_col_name = config['phenotype_field_name']
                                     phenotype_name = row[phenotype_col_name]
                                 else:
@@ -338,6 +342,58 @@ def process_soy_phenotype_data():
         raw_data = raw_data + file_data
     workbook.create_phenotype_workbook(raw_data, DS_CONST.SOY_PHENOTYPE_UNIT_MAP, DS_CONST.SOY_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
+##############################
+# SORGHUM Data processes
+##############################
+'''
+Read Soy config and load in memory
+'''
+def load_sorghum_config(sorghum_type):
+    global SORGHUM_CONFIG_DUMP
+    if sorghum_type == 'BAP':
+        with open(DIR_CONST.SORGHUM_BAP_CONFIG) as file:
+            SORGHUM_CONFIG_DUMP = json.load(file)
+    elif sorghum_type == 'DIV':
+        with open(DIR_CONST.SORGHUM_DIV_CONFIG) as file:
+            SORGHUM_CONFIG_DUMP = json.load(file)
+
+'''
+Fetch germplasm taxa
+'''
+def fetch_sorghum_germplasm_taxa():
+    console.info('Reading Taxa germplasm data for Sorghum BAP')
+    with open(DIR_CONST.SORGHUM_GERM_TAXA) as file:
+        reader = csv.DictReader(file, delimiter=',')
+        for row in reader:
+            germplasm_id = remove_underscores(row['Taxa'])
+            GERMPLASM_DATA_LIST.append(germplasm_id)
+'''
+Process Sorghum Germplasm Data
+'''
+def process_sorghum_germplasm_data():
+    print('\bCreating Germplasm WorkBook')
+    sorted_germplasm_list = sorted(set(GERMPLASM_DATA_LIST))
+    germplasm_data = []
+    for germplasm_id in sorted_germplasm_list:
+        germplasm_row = [DS_CONST.SORGHUM_SPECIES_NAME, germplasm_id, '', 'inbred', '', '', '', '', '', '', '']
+        germplasm_data.append(germplasm_row)
+    workbook.create_germplasm_workbook(germplasm_data)
+
+'''
+Process Sorghum Phenotype Data
+'''
+def process_sorghum_phenotype_data(sorghum_type):
+    global PHENOTYPE_FIELD_LIST
+    raw_data = []
+    load_sorghum_config(sorghum_type)
+    for file_config in SORGHUM_CONFIG_DUMP:
+        file_name = DIR_CONST.SORGHUM_RAW_DIR + '/' + file_config['file']
+        delimiter = file_config['delimiter']
+        germplasm_cols = file_config['germplasm_cols']
+        phenotype_cols = file_config['phenotype_cols']
+        file_data = read_file(file_name, delimiter, germplasm_cols, phenotype_cols, file_config, 'SORGHUM')
+        raw_data = raw_data + file_data
+    workbook.create_phenotype_workbook(raw_data, DS_CONST.SORGHUM_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 #################################################
 
 def generate_soy_data_files():
@@ -352,6 +408,20 @@ def generate_maize_data_files():
     process_maize_phenotype_data()
     process_maize_germplasm_data()
 
+def generate_sorghum_DIV_data_files():
+    global workbook
+    workbook = spreadsheet_helper(experimentName=DS_CONST.SORGHUM_DIV_EXP_NAM)
+    preprocess_sorghum_phenotype(DIR_CONST.SORGHUM_RAW_DIR+'/div.common.PT.csv', DIR_CONST.SORGHUM_RAW_DIR+'/div.common.PT_processed.csv')
+    process_sorghum_phenotype_data('DIV')
+    process_sorghum_germplasm_data()
+
+def generate_sorghum_BAP_data_files():
+    global workbook
+    workbook = spreadsheet_helper(experimentName=DS_CONST.SORGHUM_BAP_EXP_NAM)
+    process_sorghum_phenotype_data('BAP')
+    fetch_sorghum_germplasm_taxa()
+    process_sorghum_germplasm_data()
+
 #################################################
 def process_data(arg):
     start_time = time.time()
@@ -361,6 +431,10 @@ def process_data(arg):
         generate_soy_data_files()
     elif arg == 'MAIZE':
         generate_maize_data_files()
+    elif arg == 'SORGHUM-DIV':
+        generate_sorghum_DIV_data_files()
+    elif arg == 'SORGHUM-BAP':
+        generate_sorghum_BAP_data_files()
     total_execution_time = time.time() - start_time
     total_execution_time_ms = repr(total_execution_time).split('.')[1][:3]
     console.success('\bTotal execution time : '+time.strftime("%H:%M:%S.{}".format(total_execution_time_ms), time.gmtime(total_execution_time)))

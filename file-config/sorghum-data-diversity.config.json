@@ -1,0 +1,14 @@
+[
+  {
+    "file": "div.common.PT_processed.csv",
+    "delimiter": ",",
+    "experiment_prefix":"diversity",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Plant ID"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "SEED WEIGHT", "Brix", "Plant Height", "Anthracnose", "Basil Tiller", "Desirability Rating", "Height Uniformity", "Inflorescence Exsertion", "Panicle Length", "Rust", "Short Day Anthesis", "Vigor", "Yield Potential", "Acid Detergent Fiber", "Crude Protein", "Dry Matter Digestibility", "Fat", "Metabolizable Energy", "Net Energy for Gain", "Net Energy for Lactation", "Net Energy for Maintenance", "Phosphorous", "Starch", "Total Digestible Nutrients", "Greenbug Biotype-E", "ALUMINUM TOXICITY", "Manganese Toxicity", "Fall Army Worm", "Long Day Anthesis", "Ladder Spot", "Zonate Leaf Spot" ],
+    "compound_location": false,
+    "year_col": "None",
+    "location_col": "None"
+  }
+]
