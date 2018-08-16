@@ -127,7 +127,8 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                                 row_templ.append(phenotype_value)
                                 add_to_phenotype_field_list(phenotype_name, phenotype_value)
                                 add_exp_loc_list(experiment_name, year, location_name)
-                                file_data.append(row_templ)
+                                if data_type == 'SORGHUM' and phenotype_value != 'NA':
+                                    file_data.append(row_templ)
                 console._print('Processed %d records' % len(file_data))
         except (UnicodeError, KeyError) as e:
             console.error('File name: '+file_name+' MISSING :>>>> '+str(e))
