@@ -18,7 +18,7 @@
     "compound_germplasm": false,
     "germplasm_cols": ["Taxa"],
     "compound_phenotype": false,
-    "phenotype_cols": [ "HT.h" ],
+    "phenotype_cols": [ "HT" ],
     "compound_location": false,
     "year_col": "Year",
     "location_col": "Location"
