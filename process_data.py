@@ -16,7 +16,7 @@ import dataset_constants as DS_CONST
 import germplasm_constants as GERM_CONST
 
 # Helper imports
-from data_check_helpers import data_type_check, date_pattern_match, germplasm_check, sorghum_date_process, remove_underscores
+from data_check_helpers import data_type_check, date_pattern_match, germplasm_check, sorghum_date_process, remove_underscores, split_germplasm_sorghum_nam
 from spreadsheet_helper import spreadsheet_helper
 from preprocess_sorghum import preprocess_sorghum_phenotype
 
@@ -77,7 +77,10 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                     germplasm_id = 'Z'+row[pop_col].rjust(3,'0')+'E'+row[entry_col].rjust(4,'0')
                 else:
                     germplasm_col = germplasm_cols[0]
-                    germplasm_id = row[germplasm_col]
+                    if data_type == 'SORGHUM_NAM':
+                        germplasm_id = split_germplasm_sorghum_nam(row[germplasm_col])
+                    else:
+                        germplasm_id = row[germplasm_col]
 
                 # Filter germplasm ids between z001 and z026
                 if( germplasm_check(germplasm_id, data_type) ):
@@ -116,6 +119,9 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                                     family_name = row['Family'];
                                     family_num = row['FamNo']
                                     GERMPLASM_DATA_LIST.append(tuple([germplasm_id, family_name, family_num]))
+                                elif data_type == 'SORGHUM_NAM':
+                                    family_index = row['fam']
+                                    GERMPLASM_DATA_LIST.append(tuple([germplasm_id, family_index]))
                                 else:
                                     GERMPLASM_DATA_LIST.append(germplasm_id)
 
@@ -128,6 +134,8 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                                 add_to_phenotype_field_list(phenotype_name, phenotype_value)
                                 add_exp_loc_list(experiment_name, year, location_name)
                                 if data_type == 'SORGHUM' and phenotype_value != 'NA':
+                                    file_data.append(row_templ)
+                                elif data_type != 'SORGHUM':
                                     file_data.append(row_templ)
                 console._print('Processed %d records' % len(file_data))
         except (UnicodeError, KeyError) as e:
@@ -395,6 +403,83 @@ def process_sorghum_phenotype_data(sorghum_type):
         file_data = read_file(file_name, delimiter, germplasm_cols, phenotype_cols, file_config, 'SORGHUM')
         raw_data = raw_data + file_data
     workbook.create_phenotype_workbook(raw_data, DS_CONST.SORGHUM_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
+
+##############################
+# SORGHUM Data processes
+##############################
+'''
+Read Sorghum NAM config and load in memory
+'''
+def load_sorghum_nam_config():
+    global SORGHUM_NAM_CONFIG_DUMP
+    with open(DIR_CONST.SORGHUM_NAM_CONFIG) as file:
+        SORGHUM_NAM_CONFIG_DUMP = json.load(file)
+
+'''
+Process Sorghum NAM Germplasm data
+'''
+def process_sorgum_nam_germplasm_data(speciesName):
+    print('\bCreating Germplasm WorkBook')
+    germplasm_data = []
+    sorted_germplasm_list = sorted(set(GERMPLASM_DATA_LIST))
+    prev_family_index = 0
+    for item in sorted_germplasm_list:
+        family_index = item[1]
+        if(family_index != ''):
+            female_parent_id = GERM_CONST.SORGHUM_NAM_HUB_PARENT
+            male_parent_id = GERM_CONST.SORGHUM_NAM_FAM_MAP[int(family_index)]
+            germplasm_id = item[0]
+            origin = female_parent_id+'_x_'+male_parent_id
+            germplasm_row = [speciesName, germplasm_id, '', 'inbred', '', '', origin, female_parent_id, '', male_parent_id, '']
+            germplasm_data.append(germplasm_row)
+            prev_family_index = family_index
+        else:
+            female_parent_id = GERM_CONST.SORGHUM_NAM_HUB_PARENT
+            male_parent_id = GERM_CONST.SORGHUM_NAM_FAM_MAP[int(prev_family_index)]
+            germplasm_id = item[0]
+            origin = female_parent_id+'_x_'+male_parent_id
+            germplasm_row = [speciesName, germplasm_id, '', 'inbred', '', '', origin, female_parent_id, '', male_parent_id, '']
+            germplasm_data.append(germplasm_row)
+    workbook.create_germplasm_workbook(germplasm_data)
+
+'''
+Pre-process Sorghum NAM Germplasm Data
+'''
+def pre_preprocess_sorghum_nam_germplasm():
+    global GERMPLASM_DATA_LIST
+    germplasm_genotype_list = []
+    germplasm_phenotype_list = []
+    sorted_germplasm_list = sorted(set(GERMPLASM_DATA_LIST))
+
+    for item in sorted_germplasm_list:
+        germplasm_phenotype_list.append(item[0])
+
+    with open(DIR_CONST.SORGHUM_NAM_RAW_DIR+'/NAM.germplasms.txt') as file:
+        reader = csv.DictReader(file, delimiter='\t')
+        for row in reader:
+            germplasm_genotype_list.append(row['Taxa'])
+
+    missing_germplasm_list = set(germplasm_phenotype_list).symmetric_difference(set(germplasm_genotype_list))
+    for germplasm_id in missing_germplasm_list:
+        GERMPLASM_DATA_LIST.append(tuple([germplasm_id, '']))
+
+
+'''
+Process Sorghum NAM Phenotype data
+'''
+def process_sorghum_nam_phenotype_data():
+    global PHENOTYPE_FIELD_LIST
+    raw_data = []
+    load_sorghum_nam_config()
+    for file_config in SORGHUM_NAM_CONFIG_DUMP:
+        file_name = DIR_CONST.SORGHUM_NAM_RAW_DIR + '/' + file_config['file']
+        delimiter = file_config['delimiter']
+        germplasm_cols = file_config['germplasm_cols']
+        phenotype_cols = file_config['phenotype_cols']
+        file_data = read_file(file_name, delimiter, germplasm_cols, phenotype_cols, file_config, 'SORGHUM_NAM')
+        raw_data = raw_data + file_data
+    workbook.create_phenotype_workbook(raw_data, {}, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
+
 #################################################
 
 def generate_soy_data_files():
@@ -423,6 +508,13 @@ def generate_sorghum_BAP_data_files():
     fetch_sorghum_germplasm_taxa()
     process_sorghum_germplasm_data()
 
+def generate_sorghum_nam_data_files():
+    global workbook
+    workbook = spreadsheet_helper(experimentName=DS_CONST.SORGHUM_NAM_EXP_NAM)
+    process_sorghum_nam_phenotype_data()
+    pre_preprocess_sorghum_nam_germplasm()
+    process_sorgum_nam_germplasm_data(DS_CONST.SORGHUM_SPECIES_NAME)
+
 #################################################
 def process_data(arg):
     start_time = time.time()
@@ -436,6 +528,8 @@ def process_data(arg):
         generate_sorghum_DIV_data_files()
     elif arg == 'SORGHUM-BAP':
         generate_sorghum_BAP_data_files()
+    elif arg == 'SORGHUM-NAM':
+        generate_sorghum_nam_data_files()
     total_execution_time = time.time() - start_time
     total_execution_time_ms = repr(total_execution_time).split('.')[1][:3]
     console.success('\bTotal execution time : '+time.strftime("%H:%M:%S.{}".format(total_execution_time_ms), time.gmtime(total_execution_time)))

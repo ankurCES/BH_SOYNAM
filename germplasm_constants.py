@@ -7,6 +7,8 @@ Constants for Germplasm Data mapping
 # Hub Parent (Female Parent)
 HUB_PARENT = 'IA3023'
 
+SORGHUM_NAM_HUB_PARENT = 'Tx430'
+
 # Worksheet Name
 GERMPLASM_SHEET = 'Germplasm'
 
@@ -55,4 +57,17 @@ GERMPLASM_FAMILY_MAP = {
     'NAM 50':'PI561370',
     'NAM 54':'PI404188A',
     'NAM 64':'PI574486'
+}
+
+SORGHUM_NAM_FAM_MAP = {
+    1: 'SC283',
+    2: 'SC1103',
+    3: 'Segaolane',
+    4: 'Macia',
+    5: 'SC35',
+    6: 'Ajabsido',
+    7: 'SC971',
+    8: 'SC265',
+    9: 'SC1345',
+    10: 'P898012'
 }

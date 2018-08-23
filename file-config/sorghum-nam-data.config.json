@@ -1,0 +1,38 @@
+[
+  {
+    "file": "FT_MN2014_tassel.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"sorghumNAM",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "FT" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },
+  {
+    "file": "HT_HA2014_tassel.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"sorghumNAM",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "HT.h" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },
+  {
+    "file": "HT_MN2014_tassel.txt",
+    "delimiter": "\t",
+    "experiment_prefix":"sorghumNAM",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "HT" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  }
+]

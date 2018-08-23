@@ -8,7 +8,7 @@ def data_type_check(data_type, year, phenotype_value):
         return True
     elif (data_type == None):
         return True
-    elif (data_type == 'SORGHUM'):
+    elif (data_type == 'SORGHUM' or data_type == 'SORGHUM_NAM'):
         return True
     else:
         return False
@@ -30,3 +30,7 @@ def sorghum_date_process(value):
 
 def remove_underscores(value):
     return value.replace('_', '')
+
+def split_germplasm_sorghum_nam(value):
+    extracted_val = value.split(':')
+    return extracted_val[0]

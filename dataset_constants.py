@@ -4,7 +4,7 @@
 Constants for Different Datasets
 '''
 # AVAILABLE DATASETS
-AVAILABLE_DATASETS = ['SOY', 'MAIZE', 'SORGHUM-BAP', 'SORGHUM-DIV']
+AVAILABLE_DATASETS = ['SOY', 'MAIZE', 'SORGHUM-BAP', 'SORGHUM-DIV', 'SORGHUM-NAM']
 
 # Soyabean Family
 SOY_EXP_NAM = 'soyNAM'
@@ -317,3 +317,7 @@ SORGHUM_UNIT_MAP = {
     "Ladder Spot": "NA",
     "Zonate Leaf Spot": "NA"
 }
+
+# Sorghum NAM Constants
+SORGHUM_NAM_EXP_NAM = 'sorghumNAM'
+SORGHUM_NAM_SPECIES_NAME = 'Sorghum bicolor'
