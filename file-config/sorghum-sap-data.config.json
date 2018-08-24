@@ -1,0 +1,168 @@
+[
+  {
+    "file": "pericarp_pigmentation.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Morris",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "pigmented" ],
+    "compound_location": false,
+    "year_col": "None",
+    "location_col": "None"
+  },{
+    "file": "testa_tannin.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Morris",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "Testa" ],
+    "compound_location": false,
+    "year_col": "None",
+    "location_col": "None"
+  },{
+    "file": "12870_2016_966_MOESM2_ESM.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Chopra",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "CT_S_FW","CT_R_FW","CT_SL","CT_RL","CT_AB_FW","HT_S_FW","HT_RT_FW","HT_SL","HT_RL","ChlA","ChlB" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "anthracnose_resistance_isabela_2013.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Cuevas_Isabela, PR",
+    "compound_germplasm": false,
+    "germplasm_cols": ["ID"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "Anthracnose resistance" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },{
+    "file": "anthracnose_resistance_mayaguez_2014.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Cuevas_Mayaguez, PR",
+    "compound_germplasm": false,
+    "germplasm_cols": ["ID"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "Anthracnose resistance" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },{
+    "file": "anthracnose_resistance_tifton_2017.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Cuevas_Tifton, GA",
+    "compound_germplasm": false,
+    "germplasm_cols": ["ID"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "Anthracnose resistance" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },{
+    "file": "anthracnose_resistance_isabela_2015.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Cuevas_Isabela, PR",
+    "compound_germplasm": false,
+    "germplasm_cols": ["ID"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "Anthracnose resistance" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },{
+    "file": "anthracnose_resistance_isabela_2016.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Cuevas_Isabela, PR",
+    "compound_germplasm": false,
+    "germplasm_cols": ["ID"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "Anthracnose resistance" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "Location"
+  },{
+    "file": "seed_length_2008.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed length" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "seed_mass_2008.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed mass" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "seed_mass_A_2009.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed mass A" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "seed_width_2008.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed width" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "seed_mass_B_2009.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed mass B" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "seed_mass_A_2010.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed mass A" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  },{
+    "file": "seed_mass_B_2010.csv",
+    "delimiter": ",",
+    "experiment_prefix":"SAP_Zhang 2015",
+    "compound_germplasm": false,
+    "germplasm_cols": ["Taxa"],
+    "compound_phenotype": false,
+    "phenotype_cols": [ "seed mass B" ],
+    "compound_location": false,
+    "year_col": "Year",
+    "location_col": "None"
+  }
+]

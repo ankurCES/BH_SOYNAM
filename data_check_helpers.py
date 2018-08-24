@@ -8,7 +8,7 @@ def data_type_check(data_type, year, phenotype_value):
         return True
     elif (data_type == None):
         return True
-    elif (data_type == 'SORGHUM' or data_type == 'SORGHUM_NAM'):
+    elif (data_type in ['SORGHUM','SORGHUM_NAM', 'SORGHUM_SAP']):
         return True
     else:
         return False

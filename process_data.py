@@ -95,7 +95,7 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                         else:
                             skip_column = False
 
-                        if skip_column == False and row[column] != '#VALUE!' and row[column] != '.':
+                        if skip_column == False and row[column] != '#VALUE!' and row[column] != '.' and row[column] != '(null)':
                             row_templ = [experiment_name, '', location_name, '', '', '', '', '', germplasm_id]
                             if config['compound_phenotype'] == True:
                                 if 'maize_inflo7_rawdata.txt' in file_name or 'baptraits.csv' in file_name:
@@ -405,7 +405,46 @@ def process_sorghum_phenotype_data(sorghum_type):
     workbook.create_phenotype_workbook(raw_data, DS_CONST.SORGHUM_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
 
 ##############################
-# SORGHUM Data processes
+# SORGHUM NAM Data processes
+##############################
+'''
+Read Sorghum SAP config and load in memory
+'''
+def load_sorghum_sap_config():
+    global SORGHUM_SAP_CONFIG_DUMP
+    with open(DIR_CONST.SORGHUM_SAP_CONFIG) as file:
+        SORGHUM_SAP_CONFIG_DUMP = json.load(file)
+
+'''
+Process Sorghum SAP Phenotype data
+'''
+def process_sorghum_sap_phenotype_data():
+    global PHENOTYPE_FIELD_LIST
+    raw_data = []
+    load_sorghum_sap_config()
+    for file_config in SORGHUM_SAP_CONFIG_DUMP:
+        file_name = DIR_CONST.SORGHUM_SAP_RAW_DIR + '/' + file_config['file']
+        delimiter = file_config['delimiter']
+        germplasm_cols = file_config['germplasm_cols']
+        phenotype_cols = file_config['phenotype_cols']
+        file_data = read_file(file_name, delimiter, germplasm_cols, phenotype_cols, file_config, 'SORGHUM_SAP')
+        raw_data = raw_data + file_data
+    workbook.create_phenotype_workbook(raw_data, DS_CONST.SORGHUM_SAP_UNIT_MAP, DIST_PHENOTYPE_FIELD_LIST, EXP_LIST, LOCATION_LIST, PHENOTYPE_FIELD_LIST)
+
+'''
+Process Sorghum SAP Germplasm Data
+'''
+def process_sorghum_sap_germplasm_data():
+    print('\bCreating Germplasm WorkBook')
+    sorted_germplasm_list = sorted(set(GERMPLASM_DATA_LIST))
+    germplasm_data = []
+    for germplasm_id in sorted_germplasm_list:
+        germplasm_row = [DS_CONST.SORGHUM_SAP_SPECIES_NAME, germplasm_id, '', 'inbred', '', '', '', '', '', '', '']
+        germplasm_data.append(germplasm_row)
+    workbook.create_germplasm_workbook(germplasm_data)
+
+##############################
+# SORGHUM NAM Data processes
 ##############################
 '''
 Read Sorghum NAM config and load in memory
@@ -508,6 +547,12 @@ def generate_sorghum_BAP_data_files():
     fetch_sorghum_germplasm_taxa()
     process_sorghum_germplasm_data()
 
+def generate_sorghum_sap_data_files():
+    global workbook
+    workbook = spreadsheet_helper(experimentName=DS_CONST.SORGHUM_SAP_EXP_NAM)
+    process_sorghum_sap_phenotype_data()
+    process_sorghum_sap_germplasm_data()
+
 def generate_sorghum_nam_data_files():
     global workbook
     workbook = spreadsheet_helper(experimentName=DS_CONST.SORGHUM_NAM_EXP_NAM)
@@ -528,6 +573,8 @@ def process_data(arg):
         generate_sorghum_DIV_data_files()
     elif arg == 'SORGHUM-BAP':
         generate_sorghum_BAP_data_files()
+    elif arg == 'SORGHUM-SAP':
+        generate_sorghum_sap_data_files()
     elif arg == 'SORGHUM-NAM':
         generate_sorghum_nam_data_files()
     total_execution_time = time.time() - start_time

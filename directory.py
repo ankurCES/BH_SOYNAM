@@ -28,7 +28,12 @@ SORGHUM_GERM_TAXA = 'raw-data/sorghum-data/sorghum_germplasm_taxa.csv'
 SORGHUM_BAP_CONFIG = 'file-config/sorghum-data-bap.config.json'
 SORGHUM_DIV_CONFIG = 'file-config/sorghum-data-diversity.config.json'
 
+# Sorghum SAP Config
+# Dataset 5
+SORGHUM_SAP_RAW_DIR = 'raw-data/sorghum-sap-data'
+SORGHUM_SAP_CONFIG = 'file-config/sorghum-sap-data.config.json'
+
 # Sorghum Nam Config
-# Dataset 6 
+# Dataset 6
 SORGHUM_NAM_RAW_DIR = 'raw-data/sorghumNAM-data'
 SORGHUM_NAM_CONFIG = 'file-config/sorghum-nam-data.config.json'
