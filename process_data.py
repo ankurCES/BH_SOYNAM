@@ -133,9 +133,9 @@ def read_file(file_name, delimiter, germplasm_cols, phenotype_cols, config, data
                                 row_templ.append(phenotype_value)
                                 add_to_phenotype_field_list(phenotype_name, phenotype_value)
                                 add_exp_loc_list(experiment_name, year, location_name)
-                                if data_type == 'SORGHUM' and phenotype_value != 'NA':
+                                if data_type == 'SORGHUM' or data_type == 'SORGHUM_SAP' and phenotype_value != 'NA':
                                     file_data.append(row_templ)
-                                elif data_type != 'SORGHUM':
+                                elif data_type != 'SORGHUM' and data_type != 'SORGHUM_SAP':
                                     file_data.append(row_templ)
                 console._print('Processed %d records' % len(file_data))
         except (UnicodeError, KeyError) as e:
